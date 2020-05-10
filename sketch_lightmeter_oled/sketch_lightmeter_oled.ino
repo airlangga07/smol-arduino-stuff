@@ -32,11 +32,12 @@ void setup() {
 
 void loop() {
   sensorVal = analogRead(sensorPin);
-  Serial.print("sensorVal: ");
-  Serial.println(sensorVal);
+//  Serial.print("sensorVal: ");
+//  Serial.println(sensorVal);
 
   testdrawstyles(sensorVal);
-  if (sensorVal > 300) {
+  if (sensorVal > 400) {
+    Serial.print("1");
     testdrawjump();
   }
   delay(50);
