@@ -14,9 +14,20 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // potentiometer definition
 int const potPin = A0;
 int potVal;
+int ledVal;
+
+// LED
+const int redLEDPin = 10;
+const int blueLEDPin = 11;
+const int greenLEDPin = 9;
 
 void setup() {
   Serial.begin(9600);
+
+  // LED setup
+  pinMode(greenLEDPin, OUTPUT);
+  pinMode(blueLEDPin, OUTPUT);
+  pinMode(redLEDPin, OUTPUT);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
@@ -34,8 +45,14 @@ void loop() {
   Serial.print("potVal: ");
   Serial.println(potVal);
 
+  ledVal = potVal / 4;
+  
+  analogWrite(redLEDPin, ledVal);
+  analogWrite(blueLEDPin, ledVal);
+  analogWrite(greenLEDPin, ledVal);
+
   testdrawstyles(potVal);
-  delay(100);
+  delay(50);
 }
 
 void testdrawstyles(int x) {
