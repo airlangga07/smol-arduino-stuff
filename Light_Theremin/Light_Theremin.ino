@@ -14,7 +14,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // light sensor
 const int sensorPin = A0;
-int sensorVal;
+int sensorLow = 1023;
+int sensorHigh = 0;
+int lightSensorValue;
+
+const int ledPin = 13;
 
 void setup() {
   Serial.begin(9600);
@@ -28,19 +32,36 @@ void setup() {
   display.display();
   delay(2000); // Pause for 2 seconds
   display.clearDisplay();
+
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
+
+  while (millis() < 5000) {
+    lightSensorValue = analogRead(A0);
+
+    if (lightSensorValue > sensorHigh) {
+      sensorHigh = lightSensorValue;
+    }
+
+    if (lightSensorValue < sensorLow) {
+      sensorLow = lightSensorValue;
+    }
+  }
+
+  digitalWrite(ledPin, LOW);
 }
 
 void loop() {
-  sensorVal = analogRead(sensorPin);
-//  Serial.print("sensorVal: ");
-//  Serial.println(sensorVal);
+  lightSensorValue = analogRead(sensorPin);
 
-  testdrawstyles(sensorVal);
-  if (sensorVal > 400) {
-    Serial.print("1");
-    testdrawjump();
-  }
-  delay(50);
+  // make the sound
+  int pitch = map(lightSensorValue, sensorLow, sensorHigh, 50, 4000);
+  tone(8, pitch, 20);
+
+  // draw the OLED
+  testdrawstyles(lightSensorValue);
+
+  delay(10);
 }
 
 void testdrawstyles(int x) {
@@ -50,14 +71,5 @@ void testdrawstyles(int x) {
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0,27);
   display.println(x, DEC);
-  display.display();
-}
-
-void testdrawjump() {
-  display.setFont(&FreeSansBoldOblique9pt7b);
-  display.setTextSize(0.2);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(65,27);
-  display.println(F("JUMP"));
   display.display();
 }
