@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Turn LED on / off on NodeMCU</title>
+  </head>
+  <body>
+    <button onclick="toggleLed()">TOGGLE LED</button>
+  </body>
+
+  <script>
+    const toggleLed = (num) => {
+      var request = new XMLHttpRequest()
+
+      request.open('POST', `http://192.168.0.155/LEDON`, true)
+      request.onload = function() {
+          // Begin accessing JSON data here
+          if (request.status >= 200 && request.status < 400) {
+            console.log(request)
+          } else {
+            console.log('error')
+          }
+        }
+
+        request.send();
+    }
+  </script>
+</html>
